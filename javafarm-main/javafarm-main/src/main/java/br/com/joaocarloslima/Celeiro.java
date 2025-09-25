@@ -1,5 +1,5 @@
 package br.com.joaocarloslima;
-//sou lindo cara
+
 public class Celeiro {
     private int capacidade;
     private int qtdeBatatas;
