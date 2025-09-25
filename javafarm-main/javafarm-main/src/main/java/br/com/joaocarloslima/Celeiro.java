@@ -1,48 +1,38 @@
 package br.com.joaocarloslima;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Celeiro {
     private int capacidade;
-    private int qtdeBatatas;
-    private int qtdeCenouras;
-    private int qtdeMorangos;
+    private List<Planta> armazenadas;
 
     public Celeiro(int capacidade) {
         this.capacidade = capacidade;
-        this.qtdeBatatas = 0;
-        this.qtdeCenouras = 0;
-        this.qtdeMorangos = 0;
+        this.armazenadas = new ArrayList<>();
     }
 
-    public void armazenarBatata() {
-        if (!celeiroCheio()) qtdeBatatas++;
+    public void armazenar(Planta planta) {
+        if (!celeiroCheio()) {
+            armazenadas.add(planta);
+        }
     }
 
-    public void armazenarCenoura() {
-        if (!celeiroCheio()) qtdeCenouras++;
-    }
-
-    public void armazenarMorango() {
-        if (!celeiroCheio()) qtdeMorangos++;
-    }
-
-    public void consumirBatata() {
-        if (qtdeBatatas > 0) qtdeBatatas--;
-    }
-
-    public void consumirCenoura() {
-        if (qtdeCenouras > 0) qtdeCenouras--;
-    }
-
-    public void consumirMorango() {
-        if (qtdeMorangos > 0) qtdeMorangos--;
+    public void consumir(String nomePlanta) {
+        for (int i = 0; i < armazenadas.size(); i++) {
+            if (armazenadas.get(i).getNome().equalsIgnoreCase(nomePlanta)) {
+                armazenadas.remove(i);
+                break;
+            }
+        }
     }
 
     public int getEspacoDisponivel() {
-        return capacidade - getOcupacao();
+        return capacidade - armazenadas.size();
     }
 
     public int getOcupacao() {
-        return qtdeBatatas + qtdeCenouras + qtdeMorangos;
+        return armazenadas.size();
     }
 
     public boolean celeiroCheio() {
@@ -53,7 +43,13 @@ public class Celeiro {
         return (double) getOcupacao() / capacidade;
     }
 
-    public int getQtdeBatatas() { return qtdeBatatas; }
-    public int getQtdeCenouras() { return qtdeCenouras; }
-    public int getQtdeMorangos() { return qtdeMorangos; }
+    public int contarPorTipo(String nomePlanta) {
+        return (int) armazenadas.stream()
+                .filter(p -> p.getNome().equalsIgnoreCase(nomePlanta))
+                .count();
+    }
+
+    public List<Planta> getPlantas() {
+        return armazenadas;
+    }
 }

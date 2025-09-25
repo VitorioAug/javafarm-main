@@ -23,85 +23,17 @@ public class Controller implements Initializable {
     private int sleepTime = 3000;
 
     @FXML
-    GridPane grid;
+    private GridPane grid;
     @FXML
-    ToggleButton botaoBatata;
+    private ToggleButton botaoBatata, botaoCenoura, botaoMorango, botaoColher;
     @FXML
-    ToggleButton botaoCenoura;
+    private ProgressBar ocupacaoDoCeleiro;
     @FXML
-    ToggleButton botaoMorango;
-    @FXML
-    ToggleButton botaoColher;
-    @FXML
-    ProgressBar ocupacaoDoCeleiro;
-    @FXML
-    CheckBox ckbAcelerar;
-
-    public void atualizar() {
-        botaoBatata.setText("Batata x " + fazenda.getCeleiro().getQtdeBatatas());
-        botaoCenoura.setText("Cenoura x " + fazenda.getCeleiro().getQtdeCenouras());
-        botaoMorango.setText("Morango x " + fazenda.getCeleiro().getQtdeMorangos());
-        ocupacaoDoCeleiro.setProgress(fazenda.getCeleiro().getProgresso());
-
-        for (int x = 0; x < 13; x++) {
-            for (int y = 0; y < 13; y++) {
-                Terreno terreno = fazenda.getTerreno(x, y);
-                ImageView imageView = imageTerrenos.get(x * 13 + y);
-                if (terreno.getBatata() != null) {
-                    imageView.setImage(new Image(getClass().getResourceAsStream(terreno.getBatata().getImagem())));
-                } else if (terreno.getCenoura() != null) {
-                    imageView.setImage(new Image(getClass().getResourceAsStream(terreno.getCenoura().getImagem())));
-                } else if (terreno.getMorango() != null) {
-                    imageView.setImage(new Image(getClass().getResourceAsStream(terreno.getMorango().getImagem())));
-                } else {
-                    imageView.setImage(null);
-                }
-            }
-        }
-    }
-
-    public void ciclo() {
-        for (int x = 0; x < 13; x++) {
-            for (int y = 0; y < 13; y++) {
-                Terreno terreno = fazenda.getTerreno(x, y);
-                if (terreno.getBatata() != null) {
-                    terreno.getBatata().crescer();
-                } else if (terreno.getCenoura() != null) {
-                    terreno.getCenoura().crescer();
-                } else if (terreno.getMorango() != null) {
-                    terreno.getMorango().crescer();
-                }
-            }
-        }
-        atualizar();
-    }
-
-    public void acelerar() {
-        if (ckbAcelerar.isSelected()) {
-            sleepTime = 1000;
-        } else {
-            sleepTime = 3000;
-        }
-    }
-
-    public void clockThread() {
-        Thread thread = new Thread(() -> {
-            while (true) {
-                try {
-                    Thread.sleep(sleepTime);
-                    Platform.runLater(() -> ciclo());
-                    atualizar();
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-        });
-        thread.setDaemon(true);
-        thread.start();
-    }
+    private CheckBox ckbAcelerar;
 
     @Override
-    public void initialize(URL arg0, ResourceBundle arg1) {
+    public void initialize(URL url, ResourceBundle rb) {
+
         for (int x = 0; x < 13; x++) {
             for (int y = 0; y < 13; y++) {
                 ImageView imageView = new ImageView();
@@ -112,34 +44,94 @@ public class Controller implements Initializable {
             }
         }
 
+
         grid.setOnMouseClicked(e -> {
             int x = (int) (e.getX() / 50);
             int y = (int) (e.getY() / 50);
 
-            try{
-                if (botaoCenoura.isSelected())
-                    fazenda.plantarCenoura(x, y);
-                if (botaoBatata.isSelected())
-                    fazenda.plantarBatata(x, y);
-                if (botaoMorango.isSelected())
-                    fazenda.plantarMorango(x, y);
-                if (botaoColher.isSelected())
+            try {
+                Planta plantaSelecionada = null;
+                if (botaoBatata.isSelected()) plantaSelecionada = new Batata();
+                else if (botaoCenoura.isSelected()) plantaSelecionada = new Cenoura();
+                else if (botaoMorango.isSelected()) plantaSelecionada = new Morango();
+
+                if (plantaSelecionada != null) {
+                    fazenda.plantar(x, y, plantaSelecionada);
+                } else if (botaoColher.isSelected()) {
                     fazenda.colher(x, y);
-    
+                }
+
                 atualizar();
 
-            }catch(Exception ex){
+            } catch (Exception ex) {
                 Alert alert = new Alert(Alert.AlertType.ERROR);
                 alert.setTitle("Erro");
                 alert.setHeaderText(ex.getMessage());
                 alert.showAndWait();
             }
-
         });
 
         atualizar();
         clockThread();
-
     }
 
+
+    public void atualizar() {
+
+        ocupacaoDoCeleiro.setProgress(fazenda.getCeleiro().getProgresso());
+
+
+        for (int x = 0; x < 13; x++) {
+            for (int y = 0; y < 13; y++) {
+                Terreno terreno = fazenda.getTerreno(x, y);
+                ImageView imageView = imageTerrenos.get(x * 13 + y);
+                if (terreno.getPlanta() != null) {
+                    imageView.setImage(new Image(getClass()
+                            .getResourceAsStream(terreno.getPlanta().getImagem())));
+                } else {
+                    imageView.setImage(null);
+                }
+            }
+        }
+
+
+        botaoBatata.setText("Batata x " + fazenda.getCeleiro().contarPorTipo("Batata"));
+        botaoCenoura.setText("Cenoura x " + fazenda.getCeleiro().contarPorTipo("Cenoura"));
+        botaoMorango.setText("Morango x " + fazenda.getCeleiro().contarPorTipo("Morango"));
+    }
+
+
+    public void ciclo() {
+        for (int x = 0; x < 13; x++) {
+            for (int y = 0; y < 13; y++) {
+                Terreno terreno = fazenda.getTerreno(x, y);
+                if (terreno.getPlanta() != null) {
+                    terreno.getPlanta().crescer();
+                }
+            }
+        }
+        atualizar();
+    }
+
+
+    public void acelerar() {
+        sleepTime = ckbAcelerar.isSelected() ? 1000 : 3000;
+    }
+
+
+    public void clockThread() {
+        Thread thread = new Thread(() -> {
+            while (true) {
+                try {
+                    Thread.sleep(sleepTime);
+                    Platform.runLater(this::ciclo);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+        thread.setDaemon(true);
+        thread.start();
+    }
 }
+

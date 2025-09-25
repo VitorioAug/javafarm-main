@@ -1,82 +1,35 @@
 package br.com.joaocarloslima;
 
 public class Terreno {
-
-    private Batata batata;
-    private Cenoura cenoura;
-    private Morango morango;
-    private int x;
-    private int y;
+    private Planta planta;
+    private int x, y;
 
     public Terreno(int x, int y) {
         this.x = x;
         this.y = y;
     }
 
-    public void plantar(Batata a){
-        if (!estaOcupado()) this.batata = a;   
+    public void plantar(Planta p) {
+        if (!estaOcupado()) {
+            this.planta = p;
+        }
     }
 
-    public void plantar(Cenoura b){
-        if (!estaOcupado()) this.cenoura = b;   
+    public void colher(Celeiro celeiro) {
+        if (planta != null && planta.podeColher()) {
+            celeiro.armazenar(planta);
+            this.planta = null;
+        }
     }
 
-    public void plantar(Morango c){
-        if (!estaOcupado()) this.morango = c;  
+    public boolean estaOcupado() {
+        return planta != null;
     }
 
-   public void colher(Celeiro celeiro){
-    if (batata != null && batata.podeColher()) {
-        celeiro.armazenarBatata();
-        this.batata = null; 
-    } else if (cenoura != null && cenoura.podeColher()){
-        celeiro.armazenarCenoura();
-        this.cenoura = null; 
-    } else if (morango != null && morango.podeColher()){
-        celeiro.armazenarMorango();
-        this.morango = null;
-    }
-}
-
-    public Boolean estaOcupado(){
-        return batata != null || cenoura != null || morango != null;   
+    public Planta getPlanta() {
+        return planta;
     }
 
-    public Batata getBatata() {
-        return batata;
-    }
-
-    public Cenoura getCenoura() {
-        return cenoura;
-    }
-
-    public Morango getMorango() {
-        return morango;
-    }
-
-    public int getX() {
-        return x;
-    }
-
-    public int getY() {
-        return y;
-    }
-
-     
-
-
-
-
-
-
-
-    
-
-    
-
-    
-
-
-
-
+    public int getX() { return x; }
+    public int getY() { return y; }
 }

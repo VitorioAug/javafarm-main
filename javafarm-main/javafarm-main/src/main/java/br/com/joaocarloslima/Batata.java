@@ -1,8 +1,18 @@
 package br.com.joaocarloslima;
 
 public class Batata extends Planta {
-    public String getImagem() {
-        return super.getImagem("batata");
+    public Batata() {
+        this.tempoDeCrescimento = 3; 
     }
 
+
+    public String getImagem() {
+        return "images/batata" + tamanho + ".png";
+    }
+
+
+    public String getNome() {
+        return "Batata";
+    }
 }
+

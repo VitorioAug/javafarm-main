@@ -1,9 +1,19 @@
 package br.com.joaocarloslima;
 
 public class Cenoura extends Planta {
-    public String getImagem(){
-        return super.getImagem("cenoura");
+    public Cenoura() {
+        this.tempoDeCrescimento = 2; // Exemplo
+    }
 
+
+    public String getImagem() {
+        return "images/cenoura" + tamanho + ".png";
+    }
+
+ 
+    public String getNome() {
+        return "Cenoura";
     }
 }
+
 

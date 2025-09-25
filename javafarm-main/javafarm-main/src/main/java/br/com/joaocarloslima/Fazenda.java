@@ -17,16 +17,15 @@ public class Fazenda {
         celeiro = new Celeiro(100);
     }
 
-    public void plantarBatata(int x, int y) {
-        getTerreno(x, y).plantar(new Batata());
+    public void plantar(int x, int y, Planta planta) {
+        getTerreno(x, y).plantar(planta);
     }
 
-    public void plantarCenoura(int x, int y) {
-        getTerreno(x, y).plantar(new Cenoura());
-    }
-
-    public void plantarMorango(int x, int y) {
-        getTerreno(x, y).plantar(new Morango());
+    public void colher(int x, int y) {
+        Terreno t = getTerreno(x, y);
+        if (t != null) {
+            t.colher(celeiro);
+        }
     }
 
     public Terreno getTerreno(int x, int y) {
@@ -36,12 +35,8 @@ public class Fazenda {
                 .orElse(null);
     }
 
-    public void colher(int x, int y) {
-        Terreno t = getTerreno(x, y);
-        if (t != null) t.colher(celeiro);
-    }
-
     public Celeiro getCeleiro() {
         return celeiro;
     }
 }
+
