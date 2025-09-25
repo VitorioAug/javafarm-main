@@ -2,7 +2,7 @@ package br.com.joaocarloslima;
 
 public class Cenoura extends Planta {
     public Cenoura() {
-        this.tempoDeCrescimento = 2; // Exemplo
+        this.tempoDeCrescimento = 2;
     }
 
 
